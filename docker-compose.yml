@@ -1,0 +1,76 @@
+version: "3"
+services:
+
+#  nginx:
+#    image: nginx:1.15-alpine
+#    ports:
+#      - "80:80"
+#      - "443:443"
+#    volumes:
+#      - ./conf/nginx:/etc/nginx/conf.d
+
+  # General server acting as reverse proxy to the api
+  nginx:
+    image: owasp/modsecurity
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+
+  # Client for generating CA certs
+  certbot:
+      image: certbot/certbot
+
+  # Api infrastructure as backend for clients (i.e. pluto)
+  api:
+    container_name: deepmarket_api
+
+    build: ./api
+    image: "api:latest"
+
+    restart: always
+
+    # environment:
+    #   - MONGO_DATABASE_URL=mongodb://mongo:27017/DeepShare
+
+    ports:
+      - "8080:8080"
+
+    # working_dir: /usr/src/app/
+
+    depends_on:
+      - mongo
+
+    # volumes:
+    #   - .:/api
+    #   - /api/node_modules
+
+    # command: "npm start"
+     
+  # Price generation microservice
+  generate_prices:
+    container_name: deepmarket_gen_prices
+
+    build: ./core/generate_prices
+    image: "generate_prices:latest"
+
+    restart: always
+
+    ports:
+      - "80:80"
+      - "443:443"
+
+    depends_on:
+      - api
+
+  # Mongo db instance as backend for api
+  mongo:
+    container_name: mongo
+    image: mongo
+
+   volumes:
+     - /data/db:/data/db
+
+    ports:
+      - "27017:27017"
