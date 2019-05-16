@@ -1,0 +1,9 @@
+[submodule "api"]
+	path = api
+	url = https://github.com/shared-systems/api.git
+[submodule "core"]
+	path = core
+	url = https://github.com/shared-systems/core.git
+[submodule "docker-spark"]
+	path = docker-spark
+	url = https://github.com/shared-systems/docker-spark.git
