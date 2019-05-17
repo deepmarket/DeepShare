@@ -19,8 +19,8 @@ services:
       - ./nginx:/etc/nginx/conf.d
 
   # Client for generating CA certs
-  certbot:
-      image: certbot/certbot
+  #certbot:
+  #   image: certbot/certbot
 
   # Api infrastructure as backend for clients (i.e. pluto)
   api:
@@ -29,13 +29,20 @@ services:
     build: ./api
     image: "api:latest"
 
-    restart: always
+    # restart: always
+    environment:
+      - MONGO_DATABASE_URL=mongodb://deepmarket_db:27017
 
     ports:
       - "8080:8080"
 
-    links:
-      - generate_prices
+        #links:
+        #- generate_prices
+
+    networks:
+      - services_bridge
+      - db_bridge
+        #      - web_bridge
 
     depends_on:
       - mongo
@@ -53,18 +60,36 @@ services:
 
     # restart: always
     environment:
-      - API_PRICING_ENDPOINT=http://localhost:8080/api/v1/pricing
+      - API_PRICING_ENDPOINT=http://deepmarket_api:8080/api/v1/pricing
+
+    networks:
+      - services_bridge
 
         # depends_on:
         # - api
 
   # Mongo db instance as backend for api
   mongo:
-    container_name: mongo
+    container_name: deepmarket_db
     image: mongo
+
+    networks:
+      - db_bridge
 
     volumes:
       - /data/db:/data/db
 
     ports:
       - "27017:27017"
+
+networks:
+
+  services_bridge:
+    driver: bridge
+  
+  web_bridge:
+    driver: bridge
+
+  db_bridge:
+    driver: bridge
+
