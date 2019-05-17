@@ -29,20 +29,17 @@ services:
     build: ./api
     image: "api:latest"
 
-    # restart: always
+    restart: always
+
     environment:
       - MONGO_DATABASE_URL=mongodb://deepmarket_db:27017
 
     ports:
       - "8080:8080"
 
-        #links:
-        #- generate_prices
-
     networks:
       - services_bridge
       - db_bridge
-        #      - web_bridge
 
     depends_on:
       - mongo
@@ -65,8 +62,8 @@ services:
     networks:
       - services_bridge
 
-        # depends_on:
-        # - api
+    depends_on:
+      - api
 
   # Mongo db instance as backend for api
   mongo:
