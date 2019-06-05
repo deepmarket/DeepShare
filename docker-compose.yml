@@ -44,9 +44,7 @@ services:
     depends_on:
       - mongo
 
-    # volumes:
-    #   - .:/api
-    #   - /api/node_modules
+    command: npm start
 
   # Price generation microservice
   generate_prices:
