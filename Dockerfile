@@ -1,10 +1,7 @@
-RUN apt-get update && apt-get install wget -y 
-RUN apt-get install tar -y
-RUN wget -P /home/$USER/Documents/ http://apache.mirrors.hoobly.com/spark/spark-2.4.0/spark-2.4.0-bin-hadoop2.7.tgz
-RUN tar zxvf /home/$USER/Documents/spark-2.4.0-bin-hadoop2.7.tgz -C /tmp/
-RUN apt install openjdk-8-jre-headless -y
-RUN mv /tmp/spark-2.4.0-bin-hadoop2.7 /home/$USER/Documents/
-	#RUN ls /home/$USER/Documents/
-ENV SPARK_HOME=/home/$USER/Documents/spark-2.4.0-bin-hadoop2.7
-RUN $SPARK_HOME/sbin/start-slave.sh spark://131.252.209.102:8989
+FROM ubuntu:latest
+RUN apt-get update && apt-get install wget -y && apt-get install tar -y && apt install openjdk-8-jre-headless -y
+RUN wget -P /home/Documents/ https://www-us.apache.org/dist/spark/spark-2.4.3/spark-2.4.3-bin-hadoop2.7.tgz
+RUN tar -zxC /home/Documents/ -f /home/Documents/spark-2.4.3-bin-hadoop2.7.tgz 
+ENV SPARK_HOME=/home/Documents/spark-2.4.3-bin-hadoop2.7
+RUN ${SPARK_HOME}/sbin/start-slave.sh spark://131.252.209.102:8989
 

@@ -1,5 +1,5 @@
 if [ -x "$(command -v docker)" ]; then
-    #echo "Update docker"
+    echo "Docker is already installed"
     # command
     #sudo apt-get update
     # remove the old
@@ -7,10 +7,10 @@ if [ -x "$(command -v docker)" ]; then
     #install the new
     #sudo apt-get install docker-engine
 else
-    #echo "Install docker"
+    echo "Install docker"
     # command
     curl -fsSL https://get.docker.com -o get-docker.sh
     sh get-docker.sh
 fi
 
-build image docker build —tag= image-name .
+docker build -t deepmarket-spark:latest .
