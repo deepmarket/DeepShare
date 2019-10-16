@@ -7,7 +7,10 @@ To build `docker-compose up --build --detach`
 
 To stop `docker-compose down`
 
-To update `git submodule update --recursive --remote`
+To update commit hash `git submodule update --recursive --remote`
+
+To pull new changes from each repo `git submodule foreach git pull origin develop`
+Note: This requires a develop branch to exist in each submodule
 
 To clean `docker container prune -f && docker image prune -f && docker network prune -f && docker volume prune -f`
 
