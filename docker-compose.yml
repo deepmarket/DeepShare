@@ -1,0 +1,90 @@
+version: "3"
+services:
+
+#  nginx:
+#    image: nginx:1.15-alpine
+#    ports:
+#      - "80:80"
+#      - "443:443"
+#    volumes:
+#      - ./conf/nginx:/etc/nginx/conf.d
+
+  # General server acting as reverse proxy to the api
+  nginx:
+    image: owasp/modsecurity
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+
+  # Client for generating CA certs
+  #certbot:
+  #   image: certbot/certbot
+
+  # Api infrastructure as backend for clients (i.e. pluto)
+  api:
+    container_name: deepmarket_api
+
+    build: ./api
+    image: "api:latest"
+
+    restart: always
+
+    environment:
+      - MONGO_DATABASE_URL=mongodb://deepmarket_db:27017
+
+    ports:
+      - "8080:8080"
+
+    networks:
+      - services_bridge
+      - db_bridge
+
+    depends_on:
+      - mongo
+
+    command: npm start
+
+  # Price generation microservice
+  generate_prices:
+    container_name: deepmarket_gen_prices
+
+    build: ./core/generate_prices
+    image: "generate_prices:latest"
+
+    # restart: always
+    environment:
+      - API_PRICING_ENDPOINT=http://deepmarket_api:8080/api/v1/pricing
+
+    networks:
+      - services_bridge
+
+    depends_on:
+      - api
+
+  # Mongo db instance as backend for api
+  mongo:
+    container_name: deepmarket_db
+    image: mongo
+
+    networks:
+      - db_bridge
+
+    volumes:
+      - /data/db:/data/db
+
+    ports:
+      - "27017:27017"
+
+networks:
+
+  services_bridge:
+    driver: bridge
+  
+  web_bridge:
+    driver: bridge
+
+  db_bridge:
+    driver: bridge
+

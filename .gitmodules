@@ -1,0 +1,9 @@
+[submodule "api"]
+	path = api
+	url = https://github.com/deepmarket/api.git
+[submodule "core"]
+	path = core
+	url = https://github.com/deepmarket/core.git
+[submodule "docker-spark"]
+	path = docker-spark
+	url = https://github.com/deepmarket/docker-spark.git
